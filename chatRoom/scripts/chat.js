@@ -7,10 +7,11 @@ class Chatroom{
     constructor(room, username){
         this.room = room;
         this.username = username;
+        //bd from index file
         this.chats = db.collection('chats');
         this.unsub;
     }
-    //adding new chat documents
+    //adding new chat documents (sending as JS objects)
     async addChat(message){
         //format a chat object
         const now = new Date();
@@ -20,11 +21,12 @@ class Chatroom{
             room: this.room,
             created_at: firebase.firestore.Timestamp.fromDate(now)
         };
-        //save the chat document
+        //save the chat document to the db
         const response = await this.chats.add(chat);
         return response;
     }
     //set up real time listener for new chats
+    //not async because it's not a one time call
     getChats(callback){
         this.unsub = this.chats
             .where('room', '==', this.room)
@@ -56,5 +58,6 @@ class Chatroom{
         }
     }
 }
+
 
 
